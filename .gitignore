@@ -1,0 +1,6 @@
+auction_photos/
+db.sqlite3
+.env
+__pycache__/
+**/__pycache__/**
+sync.log

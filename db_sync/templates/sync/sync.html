@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Auction Synchronization</h2>
+        </div>
+        <div class="card-body">
+            <form id="sync-form">
+                {% csrf_token %}
+                <div class="form-group mb-3">
+                    <label for="sync-type" class="form-label">Select Synchronization Type</label>
+                    <select id="sync-type" name="sync_type" class="form-select">
+                        {% for option in sync_options %}
+                        <option value="{{ option.value }}">{{ option.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" id="sync-button">
+                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    Synchronize
+                </button>
+            </form>
+
+            <div id="sync-result" class="mt-3"></div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const syncForm = document.getElementById('sync-form');
+    const syncButton = document.getElementById('sync-button');
+    const syncResult = document.getElementById('sync-result');
+
+    syncForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Show loading spinner
+        syncButton.disabled = true;
+        syncButton.querySelector('.spinner-border').classList.remove('d-none');
+        syncResult.innerHTML = '';
+
+        fetch('{{ sync_url }}', {
+            method: 'POST',
+            body: new FormData(syncForm),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                syncResult.innerHTML = `
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        ${data.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+            } else {
+                syncResult.innerHTML = `
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        ${data.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            syncResult.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    An unexpected error occurred: ${error}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+        })
+        .finally(() => {
+            syncButton.disabled = false;
+            syncButton.querySelector('.spinner-border').classList.add('d-none');
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

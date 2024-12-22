@@ -1,0 +1,150 @@
+/* Base theme colors */
+:root {
+    --bs-primary: #2c3e50;
+    --bs-primary-rgb: 44, 62, 80;
+    --bs-secondary: #34495e;
+    --bs-secondary-rgb: 52, 73, 94;
+    --bs-success: #27ae60;
+    --bs-success-rgb: 39, 174, 96;
+    --bs-info: #3498db;
+    --bs-info-rgb: 52, 152, 219;
+    --bs-warning: #f39c12;
+    --bs-warning-rgb: 243, 156, 18;
+    --bs-danger: #c0392b;
+    --bs-danger-rgb: 192, 57, 43;
+    --bs-light: #ecf0f1;
+    --bs-light-rgb: 236, 240, 241;
+    --bs-dark: #2c3e50;
+    --bs-dark-rgb: 44, 62, 80;
+}
+
+/* Background colors */
+.bg-primary {
+    background-color: var(--bs-primary) !important;
+}
+
+/* Text colors */
+.text-primary {
+    color: var(--bs-primary) !important;
+}
+
+/* Border colors */
+.border-primary {
+    border-color: var(--bs-primary) !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+}
+
+.btn-primary:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.9) !important;
+    border-color: rgba(var(--bs-primary-rgb), 0.9) !important;
+}
+
+.btn-outline-primary {
+    color: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active,
+.btn-check:checked + .btn-outline-primary {
+    color: #fff !important;
+    background-color: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+}
+
+/* Pagination */
+.page-item.active .page-link {
+    background-color: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+    color: #fff !important; 
+}
+
+.page-link {
+    color: var(--bs-primary) !important;
+}
+
+.page-link:hover {
+    color: rgba(var(--bs-primary-rgb), 0.8) !important;
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+.page-item:not(.active) .page-link:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Navbar */
+.navbar-dark.bg-primary {
+    background-color: var(--bs-primary) !important;
+}
+
+/* Links */
+a {
+    color: var(--bs-primary);
+}
+
+a:hover {
+    color: rgba(var(--bs-primary-rgb), 0.8);
+}
+
+/* Breadcrumbs */
+.breadcrumb-item a {
+    color: var(--bs-primary);
+}
+
+.breadcrumb-item.active {
+    color: rgba(var(--bs-primary-rgb), 0.8);
+}
+
+/* Forms */
+.form-check-input:checked {
+    background-color: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+}
+
+/* Alerts */
+.alert-primary {
+    color: var(--bs-primary);
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+    border-color: rgba(var(--bs-primary-rgb), 0.2);
+}
+
+/* Badges */
+.badge.bg-primary {
+    background-color: var(--bs-primary) !important;
+}
+
+/* List groups */
+.list-group-item.active {
+    background-color: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+}
+
+/* Progress bars */
+.progress-bar.bg-primary {
+    background-color: var(--bs-primary) !important;
+}
+
+/* Dropdowns */
+.dropdown-item.active, 
+.dropdown-item:active {
+    background-color: var(--bs-primary) !important;
+}
+
+/* Table */
+.table-primary {
+    --bs-table-bg: rgba(var(--bs-primary-rgb), 0.1);
+    --bs-table-border-color: rgba(var(--bs-primary-rgb), 0.2);
+}
+
+/* Custom focus states */
+.form-control:focus,
+.form-select:focus {
+    border-color: rgba(var(--bs-primary-rgb), 0.5);
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+}
