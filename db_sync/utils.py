@@ -1,6 +1,7 @@
 import os
 import logging
 import requests
+import re
 
 from urllib.parse import urlparse
 from django.core.files.base import ContentFile
@@ -147,3 +148,69 @@ def sync_active_auctions():
 
     except Exception as e:
         logger.error(f"An unexpected error occurred during active auctions synchronization: {e}")
+
+def extract_auction_id(url):
+    """Extract auction ID from URL using regex"""
+    pattern = r'/product/cba/(\d+)/'
+    match = re.search(pattern, url)
+    return match.group(1) if match else None
+
+def sync_single_auction(auction_id):
+    """Sync a single auction from the API"""
+    api_url = f"https://subastas.justiciacordoba.gob.ar/api/public_good/{auction_id}/"
+    
+    try:
+        response = requests.get(api_url)
+        response.raise_for_status()
+        item = response.json()
+        
+        image_filename, image_content = None, None
+        if item['mini_photo']:
+            image_filename, image_content = download_and_save_image(item['mini_photo'], item['id'])
+
+        if item['status'] != 'Terminado':
+            status = 'active'
+        else:
+            status = 'ended'
+        
+        defaults = {
+            'name': item['name'],
+            'price': item['price'],
+            'start_date': item['start_date'],
+            'end_date': item['end_date'],
+            'uri': item['uri'],
+            'status': status,
+            'category': str(item.get('cat_id')),
+            'currency': item['currency']['code']
+        }
+        
+        auction_item = AuctionItem.objects.filter(id=item['id']).first()
+        
+        if auction_item:
+            for key, value in defaults.items():
+                setattr(auction_item, key, value)
+            
+            if image_filename and image_content:
+                if auction_item.mini_photo:
+                    try:
+                        old_path = Path(auction_item.mini_photo.path)
+                        if old_path.exists():
+                            old_path.unlink()
+                    except Exception as e:
+                        logger.error(f"Failed to delete old image for item {item['id']}: {e}")
+                auction_item.mini_photo.save(image_filename, image_content, save=False)
+            
+            auction_item.save()
+        else:
+            if image_filename and image_content:
+                auction_item = AuctionItem(id=item['id'], **defaults)
+                auction_item.mini_photo.save(image_filename, image_content, save=False)
+                auction_item.save()
+            else:
+                auction_item = AuctionItem.objects.create(id=item['id'], **defaults)
+        
+        return auction_item.id
+        
+    except Exception as e:
+        logger.error(f"Failed to sync auction {auction_id}: {e}")
+        raise
